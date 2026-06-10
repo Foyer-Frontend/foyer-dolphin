@@ -30,11 +30,18 @@ struct QuickMenuItem
   const char* fallback;
 };
 
-constexpr std::array<QuickMenuItem, 4> kQuickMenuItems = {{
-    {"emulator_save_state", "Save State"},
-    {"emulator_load_state", "Load State"},
-    {"emulator_settings", "Settings"},
-    {"emulator_exit_game", "Exit Game"},
+// foyer pause-menu tree — mirrors the foyer player's
+// PopulatePauseRoot order (Resume / Restart rom / Save state /
+// Load state / Display options / Quit to foyer). Shaders / Core
+// options / Cheats / Achievements are libretro-player concepts;
+// Dolphin equivalents land here if/when they're wired.
+constexpr std::array<QuickMenuItem, 6> kQuickMenuItems = {{
+    {"emulator_resume", "Resume"},
+    {"emulator_restart", "Restart game"},
+    {"emulator_save_state", "Save state"},
+    {"emulator_load_state", "Load state"},
+    {"emulator_settings", "Display options"},
+    {"emulator_exit_game", "Quit to foyer"},
 }};
 constexpr int kOverlaySlotCount = 4;
 constexpr int kSettingsItemCount = 2;
@@ -940,20 +947,26 @@ Action Render(int display_w, int display_h)
       switch (s_selected)
       {
       case 0:
+        result = Action::Resume;
+        break;
+      case 1:
+        result = Action::Restart;
+        break;
+      case 2:
         RefreshSlotLabels();
         s_menu = MenuScreen::SaveStates;
         s_slot_selected = 0;
         break;
-      case 1:
+      case 3:
         RefreshSlotLabels();
         s_menu = MenuScreen::LoadStates;
         s_slot_selected = 0;
         break;
-      case 2:
+      case 4:
         s_menu = MenuScreen::Settings;
         s_settings_selected = 0;
         break;
-      case 3:
+      case 5:
         result = Action::Exit;
         break;
       default:

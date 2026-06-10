@@ -34,6 +34,7 @@
 #include "Core/ConfigManager.h"
 #include "Core/Core.h"
 #include "Core/Host.h"
+#include "Core/HW/ProcessorInterface.h"
 #include "Core/PowerPC/PowerPC.h"
 #include "Core/State.h"
 #include "Core/System.h"
@@ -766,6 +767,15 @@ int main(int argc, char* argv[])
               RequestChainloadBackToTico();
               break;
             case A::Resume:
+              // foyer menu's explicit Resume row — drop the overlay;
+              // the resume-on-close path below unpauses the core.
+              DolphinNX::OverlayUI::SetVisible(false);
+              break;
+            case A::Restart:
+              LOG("Overlay: Restart requested\n");
+              system.GetProcessorInterface().ResetButton_Tap();
+              DolphinNX::OverlayUI::SetVisible(false);
+              break;
             case A::None:
             default:
               break;

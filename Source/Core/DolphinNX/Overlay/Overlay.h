@@ -13,6 +13,7 @@ enum class Action
 {
   None,
   Resume,
+  Restart,
   Exit,
   SaveStateSlot1,
   SaveStateSlot2,
