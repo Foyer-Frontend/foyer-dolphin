@@ -565,6 +565,9 @@ int main(int argc, char* argv[])
     SetDefaultEnvIfUnset("MESA_DEBUG", "1");
     SetDefaultEnvIfUnset("MESA_VK_ABORT_ON_DEVICE_LOSS", "0");
     SetDefaultEnvIfUnset("NVK_DEBUG", "vm");
+    // GM20B is pre-Turing => NVK marks it non-conformant and refuses
+    // the physical device without this opt-in.
+    SetDefaultEnvIfUnset("NVK_I_WANT_A_BROKEN_VULKAN_DRIVER", "1");
     LOG("Environment set\n");
 
     s_nwindow = nwindowGetDefault();
