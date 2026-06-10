@@ -387,7 +387,7 @@ static bool IsGameCubeDisc(const std::optional<BootGameMetadata>& metadata)
 }
 
 static constexpr bool kNxLogEnabled = false;
-static constexpr const char kNxLogPath[] = "sdmc:/dolphin-nx.log";
+static constexpr const char kNxLogPath[] = "sdmc:/foyer/roms/dolphin-nx.log";
 static std::mutex s_log_mutex;
 static bool s_log_ready = false;
 
