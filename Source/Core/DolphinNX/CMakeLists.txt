@@ -104,6 +104,12 @@ target_link_libraries(dolphin-nx PRIVATE
 # libnx + SDL2 (from devkitPro portlibs, NOT bundled) — full paths to avoid search issues
 target_link_libraries(dolphin-nx PRIVATE
   ${DEVKITPRO}/portlibs/switch/lib/libSDL2.a
+  # switch-sdl2's EGL video backend needs the mesa GL stack after it
+  # (what sdl2-config --static-libs emits); without these the final
+  # link dies on eglGetDisplay & co.
+  ${DEVKITPRO}/portlibs/switch/lib/libEGL.a
+  ${DEVKITPRO}/portlibs/switch/lib/libglapi.a
+  ${DEVKITPRO}/portlibs/switch/lib/libdrm_nouveau.a
   ${DEVKITPRO}/libnx/lib/libnx.a
   m
 )
