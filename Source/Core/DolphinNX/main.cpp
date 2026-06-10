@@ -558,6 +558,13 @@ int main(int argc, char* argv[])
 
     setenv("HOME", "sdmc:/tico/system/gc", 1);
     SetDefaultEnvIfUnset("MESA_VK_WSI_PRESENT_MODE", "fifo");
+    // Bring-up diagnostics: mesa's util/log + vulkan runtime errors
+    // into the boot log so silent physical-device probe failures
+    // surface.
+    SetDefaultEnvIfUnset("MESA_LOG_FILE", "sdmc:/foyer/data/logs/dolphin-nx.log");
+    SetDefaultEnvIfUnset("MESA_DEBUG", "1");
+    SetDefaultEnvIfUnset("MESA_VK_ABORT_ON_DEVICE_LOSS", "0");
+    SetDefaultEnvIfUnset("NVK_DEBUG", "vm");
     LOG("Environment set\n");
 
     s_nwindow = nwindowGetDefault();
