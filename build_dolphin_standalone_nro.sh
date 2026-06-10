@@ -61,9 +61,9 @@ mkdir -p "${ROMFS_DIR}"
 cp -R "${SCRIPT_DIR}/Source/Core/DolphinNX/Assets/fonts" "${ROMFS_DIR}/"
 cp -R "${SCRIPT_DIR}/Source/Core/DolphinNX/Assets/lang" "${ROMFS_DIR}/"
 nacptool --create \
-  "tico Dolphin" \
-  "ticoverse.com, dolphin-emu" \
-  "0.0.4" \
+  "foyer Dolphin" \
+  "Foyer-Frontend, dolphin-emu" \
+  "0.1.0" \
   "${BUILD_DIR}/dolphin.nacp"
 
 cp "${BUILD_DIR}/Binaries/dolphin-nx" "${BUILD_DIR}/Binaries/dolphin-nx.debug.elf"

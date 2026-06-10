@@ -441,18 +441,24 @@ static void ConfigureNextLoadForTico()
   if (!s_chainload_to_tico)
     return;
 
-  const char* primary_nro = "sdmc:/switch/tico.nro";
-  const char* fallback_nro = "sdmc:/switch/tico/tico.nro";
+  // foyer-dolphin: Exit returns to the foyer browser (tico paths
+  // kept as fallbacks so a tico install still round-trips).
+  const char* candidates[] = {
+      "sdmc:/switch/foyer/foyer.nro",
+      "sdmc:/switch/foyer.nro",
+      "sdmc:/switch/tico.nro",
+      "sdmc:/switch/tico/tico.nro",
+  };
   const char* target_nro = nullptr;
 
   struct stat st;
-  if (stat(primary_nro, &st) == 0)
+  for (const char* c : candidates)
   {
-    target_nro = primary_nro;
-  }
-  else if (stat(fallback_nro, &st) == 0)
-  {
-    target_nro = fallback_nro;
+    if (stat(c, &st) == 0)
+    {
+      target_nro = c;
+      break;
+    }
   }
 
   if (target_nro)
@@ -464,7 +470,7 @@ static void ConfigureNextLoadForTico()
   }
   else
   {
-    LOG("Tico chainload target not found; exiting normally\n");
+    LOG("Launcher chainload target not found; exiting normally\n");
   }
 
   if (std::remove("imgui.ini") == 0)

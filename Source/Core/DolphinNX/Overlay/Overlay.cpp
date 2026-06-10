@@ -142,7 +142,7 @@ std::string BuildTitle()
     break;
   case MenuScreen::QuickMenu:
   default:
-    title = s_title.empty() ? "Dolphin" : s_title;
+    title = s_title.empty() ? "foyer Dolphin" : s_title;
     break;
   }
 
@@ -353,7 +353,7 @@ void RenderTitleCard(ImDrawList* dl, ImVec2 display_size, float ease)
   const float card_y = (available_top_space - title_height) * 0.5f;
   const float start_y = -150.0f * scale;
   const float current_y = start_y + ((card_y - start_y) * ease);
-  const ImU32 text_color = IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+  const ImU32 text_color = IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
   const ImVec2 text_size = ImGui::CalcTextSize(title.c_str());
   const float text_x = card_x + ((card_width - text_size.x) * 0.5f);
   const float text_y = current_y + ((title_height - text_size.y) * 0.5f);
@@ -379,7 +379,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
     const ImVec2 p1(menu_pos.x + menu_size.x, menu_pos.y + menu_size.y);
     const float corner_radius = 16.0f * scale;
 
-    dl->AddRectFilled(p0, p1, IM_COL32(45, 45, 45, static_cast<int>(255.0f * ease)),
+    dl->AddRectFilled(p0, p1, IM_COL32(24, 24, 26, static_cast<int>(255.0f * ease)),
                       corner_radius);
 
     ImFont* font = ImGui::GetFont();
@@ -408,7 +408,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
         }
 
         dl->AddRectFilled(item_min, item_max,
-                          IM_COL32(60, 60, 60, static_cast<int>(255.0f * ease)), item_radius,
+                          IM_COL32(59, 130, 246, static_cast<int>(255.0f * ease)), item_radius,
                           corners);
       }
 
@@ -420,7 +420,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
                    GetViewportValueLabel();
       const ImU32 text_color =
           selected ? IM_COL32(255, 255, 255, static_cast<int>(255.0f * ease)) :
-                     IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+                     IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
 
       const ImVec2 label_text_size =
           font->CalcTextSizeA(label_size, FLT_MAX, 0.0f, label.c_str());
@@ -472,7 +472,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
   const ImVec2 p1(menu_pos.x + menu_size.x, menu_pos.y + menu_size.y);
   const float corner_radius = 16.0f * scale;
 
-  dl->AddRectFilled(p0, p1, IM_COL32(45, 45, 45, static_cast<int>(255.0f * ease)), corner_radius);
+  dl->AddRectFilled(p0, p1, IM_COL32(24, 24, 26, static_cast<int>(255.0f * ease)), corner_radius);
 
   ImFont* font = ImGui::GetFont();
   const float label_size = ImGui::GetFontSize() * 0.85f;
@@ -500,7 +500,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
       }
 
       dl->AddRectFilled(item_min, item_max,
-                        IM_COL32(60, 60, 60, static_cast<int>(255.0f * ease)), item_radius,
+                        IM_COL32(59, 130, 246, static_cast<int>(255.0f * ease)), item_radius,
                         corners);
     }
 
@@ -515,7 +515,7 @@ void RenderMenu(ImDrawList* dl, ImVec2 display_size, float ease)
     const float text_x = item_min.x + (20.0f * scale);
     const float text_y = item_min.y + ((item_height - text_size.y) * 0.5f);
     const ImU32 text_color = selected ? IM_COL32(255, 255, 255, static_cast<int>(255.0f * ease))
-                                      : IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+                                      : IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
     dl->AddText(font, label_size, ImVec2(text_x, text_y), text_color, label.data(),
                 label.data() + label.size());
   }
@@ -568,7 +568,7 @@ void RenderHelpersBar(ImDrawList* dl, ImVec2 display_size, float ease)
   const float bar_y = display_size.y - margin_bottom - bar_height;
   float cursor_x = bar_x + padding;
   const float center_y = bar_y + (bar_height * 0.5f);
-  const ImU32 text_color = IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+  const ImU32 text_color = IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
 
   for (const Helper& helper : helpers)
   {
@@ -602,7 +602,7 @@ void RenderSocialArea(ImDrawList* dl, float ease)
   const float radius = avatar_size * 0.5f;
 
   dl->AddCircleFilled(avatar_center, radius,
-                      IM_COL32(45, 45, 45, static_cast<int>(255.0f * ease)));
+                      IM_COL32(24, 24, 26, static_cast<int>(255.0f * ease)));
 
   const float image_radius = radius - (4.0f * scale);
   if (s_avatar_texture_id != 0)
@@ -652,7 +652,7 @@ void RenderStatusBar(ImDrawList* dl, ImVec2 display_size, float ease)
   const float bar_y = top_margin + ((1.0f - ease) * -20.0f);
   const float center_y = bar_y + (bar_height * 0.5f);
   float cursor_x = bar_x + padding;
-  const ImU32 text_color = IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+  const ImU32 text_color = IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
 
   dl->AddText(font, font_size, ImVec2(cursor_x, center_y - (font_size * 0.5f)), text_color,
               time_str);
@@ -683,7 +683,7 @@ void RenderStatusBar(ImDrawList* dl, ImVec2 display_size, float ease)
     const ImVec2 fill_max(fill_min.x + ((body_width - (pad * 2.0f)) * pct), body_max.y - pad);
     const ImU32 fill_color =
         charging ? IM_COL32(255, 210, 90, static_cast<int>(255.0f * ease))
-                 : IM_COL32(200, 200, 200, static_cast<int>(255.0f * ease));
+                 : IM_COL32(248, 248, 250, static_cast<int>(255.0f * ease));
     dl->AddRectFilled(fill_min, fill_max, fill_color, 1.5f);
   }
 
