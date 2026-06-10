@@ -386,7 +386,7 @@ static bool IsGameCubeDisc(const std::optional<BootGameMetadata>& metadata)
   return metadata && metadata->platform == DiscIO::Platform::GameCubeDisc;
 }
 
-static constexpr bool kNxLogEnabled = false;
+static constexpr bool kNxLogEnabled = true;
 static constexpr const char kNxLogPath[] = "sdmc:/foyer/data/logs/dolphin-nx.log";
 static std::mutex s_log_mutex;
 static bool s_log_ready = false;
