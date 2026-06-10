@@ -1,6 +1,8 @@
 // Copyright 2016 Dolphin Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <cstdarg>
+#include <cstdio>
 #include "VideoBackends/Vulkan/VulkanContext.h"
 
 #include <algorithm>
@@ -221,6 +223,25 @@ static u32 getAPIVersion()
   return used_version;
 }
 
+// foyer bring-up instrumentation — appends to the NX boot log so
+// hardware runs report exactly which Vulkan bootstrap step failed.
+static void NxBringupLog(const char* fmt, ...)
+{
+#ifdef __SWITCH__
+  if (FILE* fp = fopen("sdmc:/foyer/data/logs/dolphin-nx.log", "a"))
+  {
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(fp, fmt, ap);
+    va_end(ap);
+    fputc('\n', fp);
+    fclose(fp);
+  }
+#else
+  (void)fmt;
+#endif
+}
+
 VkInstance VulkanContext::CreateVulkanInstance(WindowSystemType wstype, bool enable_debug_utils,
                                                bool enable_validation_layer,
                                                u32* out_vk_api_version)
@@ -258,8 +279,13 @@ VkInstance VulkanContext::CreateVulkanInstance(WindowSystemType wstype, bool ena
     instance_create_info.ppEnabledLayerNames = &VALIDATION_LAYER_NAME;
   }
 
+  NxBringupLog("VK: creating instance apiVersion=0x%x extCount=%u",
+               app_info.apiVersion, (unsigned)enabled_extensions.size());
+  for (const char* e : enabled_extensions)
+    NxBringupLog("VK:   ext %s", e);
   VkInstance instance;
   VkResult res = vkCreateInstance(&instance_create_info, nullptr, &instance);
+  NxBringupLog("VK: vkCreateInstance res=%d", (int)res);
   if (res != VK_SUCCESS)
   {
     LOG_VULKAN_ERROR(res, "vkCreateInstance failed: ");
@@ -278,9 +304,11 @@ bool VulkanContext::SelectInstanceExtensions(std::vector<const char*>* extension
   if (res != VK_SUCCESS)
   {
     LOG_VULKAN_ERROR(res, "vkEnumerateInstanceExtensionProperties failed: ");
+    NxBringupLog("VK: EnumerateInstanceExtensionProperties failed res=%d", (int)res);
     return false;
   }
 
+  NxBringupLog("VK: instance extension count=%u", extension_count);
   if (extension_count == 0)
   {
     ERROR_LOG_FMT(VIDEO, "Vulkan: No extensions supported by instance.");
@@ -291,6 +319,8 @@ bool VulkanContext::SelectInstanceExtensions(std::vector<const char*>* extension
   res = vkEnumerateInstanceExtensionProperties(nullptr, &extension_count,
                                                available_extension_list.data());
   ASSERT(res == VK_SUCCESS);
+  for (const auto& e : available_extension_list)
+    NxBringupLog("VK:   avail %s", e.extensionName);
 
   u32 validation_layer_extension_count = 0;
   std::vector<VkExtensionProperties> validation_layer_extension_list;

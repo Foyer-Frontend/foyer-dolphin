@@ -94,6 +94,8 @@ static std::optional<std::string> GetLaunchRomPath(int argc, char* argv[])
 
 static void LOG(const char* fmt, ...);
 
+
+
 struct BootGameMetadata
 {
   std::string game_id;
@@ -388,6 +390,19 @@ static bool IsGameCubeDisc(const std::optional<BootGameMetadata>& metadata)
 
 static constexpr bool kNxLogEnabled = true;
 static constexpr const char kNxLogPath[] = "sdmc:/foyer/data/logs/dolphin-nx.log";
+
+// switch-nvk drm_shim trace sink — routes driver bring-up traces
+// into the boot log while the port stabilises.
+extern "C" void (*g_drm_shim_log_sink)(const char*);
+static void NxShimSink(const char* line)
+{
+  if (FILE* fp = fopen(kNxLogPath, "a"))
+  {
+    fputs(line, fp);
+    fclose(fp);
+  }
+}
+
 static std::mutex s_log_mutex;
 static bool s_log_ready = false;
 
@@ -498,6 +513,7 @@ int main(int argc, char* argv[])
   socketInitializeDefault();
   romfsInit();
 
+  g_drm_shim_log_sink = NxShimSink;
   if (kNxLogEnabled)
   {
     if (FILE* fp = fopen(kNxLogPath, "w"))
