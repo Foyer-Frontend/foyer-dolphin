@@ -389,6 +389,27 @@ static bool IsGameCubeDisc(const std::optional<BootGameMetadata>& metadata)
 }
 
 static constexpr bool kNxLogEnabled = true;
+
+extern "C" {
+// Real fault frame logger — libnx routes user exceptions here
+// before the default break. Captures the true PC/LR/FAR for
+// addr2line instead of the handler-context the crash report shows.
+alignas(16) u8 __nx_exception_stack[0x8000];
+u64 __nx_exception_stack_size = sizeof(__nx_exception_stack);
+void __libnx_exception_handler(ThreadExceptionDump* ctx)
+{
+  if (FILE* fp = fopen("sdmc:/foyer/data/logs/dolphin-nx.log", "a"))
+  {
+    fprintf(fp, "FAULT: type=0x%x pc=0x%lx lr=0x%lx far=0x%lx\n",
+            ctx->error_desc, ctx->pc.x, ctx->lr.x, ctx->far.x);
+    for (int i = 0; i < 29; i++)
+      if (ctx->cpu_gprs[i].x)
+        fprintf(fp, "FAULT:  x%d=0x%lx\n", i, ctx->cpu_gprs[i].x);
+    fclose(fp);
+  }
+}
+}
+
 static constexpr const char kNxLogPath[] = "sdmc:/foyer/data/logs/dolphin-nx.log";
 
 // switch-nvk drm_shim trace sink — routes driver bring-up traces

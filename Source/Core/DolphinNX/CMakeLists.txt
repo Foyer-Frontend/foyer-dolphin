@@ -89,8 +89,15 @@ target_link_libraries(dolphin-nx PRIVATE
 # Use Mesa's public loaderless libvulkan.a package instead of linking
 # libnvk.a and every support archive manually.
 if(DEFINED MESA_NVK_DIR)
+  # Whole-archive: NVK's generated dispatch tables reference the
+  # vk_common_* entrypoints weakly; plain archive linking never
+  # extracts those members and the physical-device dispatch table
+  # ends up with NULL slots (br x16 -> pc=0 on hardware in
+  # vk_tramp_GetPhysicalDeviceProperties2).
   target_link_libraries(dolphin-nx PRIVATE
+    -Wl,--whole-archive
     ${MESA_NVK_DIR}/src/nouveau/vulkan/libvulkan.a
+    -Wl,--no-whole-archive
   )
 endif()
 
